@@ -244,7 +244,7 @@ data "aws_ami" "docker-machine" {
 }
 
 resource "aws_autoscaling_group" "gitlab_runner_instance" {
-  name                = "${var.environment}-as-group"
+  name                = "${aws_launch_configuration.gitlab_runner_instance.name}-as-group"
   vpc_zone_identifier = var.subnet_ids_gitlab_runner
 
   min_size                  = "1"
@@ -308,6 +308,7 @@ locals {
 }
 
 resource "aws_launch_configuration" "gitlab_runner_instance" {
+  name_prefix          = var.environment
   security_groups      = [aws_security_group.runner.id]
   key_name             = local.key_pair_name
   image_id             = data.aws_ami.runner.id
